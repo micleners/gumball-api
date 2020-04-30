@@ -1,0 +1,7 @@
+sqlalchemy
+flask~=1.1
+requests
+psycopg2-binary
+boto3~=1.12
+botocore~=1.15
+more_itertools

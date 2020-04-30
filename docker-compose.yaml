@@ -1,0 +1,21 @@
+version: '3'
+services:
+  # OpsHub database
+  db:
+    image: postgres
+    ports:
+      - "5432:${DB_PORT:-5432}"
+    environment:
+      POSTGRES_PASSWORD: secret
+
+  # Cloud object store for gumball data files
+  s3:
+    image: minio/minio
+    volumes:
+      - ./data:/data
+    command: ['server', '/data']
+    ports:
+      - "9000:${S3_PORT:-9000}"
+    environment:
+      MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
+      MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
