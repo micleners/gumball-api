@@ -17,7 +17,7 @@ version = '0.0.1'
 def create_app(*args, **kwargs) -> Flask:
     app = Flask(__name__, *args, **kwargs)
     app.config.from_pyfile('config.py')
-    cors = CORS(app, resources={r"*": {"origins": "*"}})
+    cors = CORS(app, resources={r"*": {"origins": ["http://localhost:3000", "http://localhost:8000"]}})
 
     bucket_name = app.config.get('S3_BUCKET_NAME')
 
