@@ -1,1 +1,1 @@
-web: gunicorn wsgi:opshub
+web: gunicorn "opshub:create_app()"
