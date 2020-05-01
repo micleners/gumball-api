@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from pytz import timezone
 
 import botocore
 from opshub.fileshare import create_client
@@ -9,10 +10,9 @@ PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UPLOAD_PATH = os.path.join(PROJECT_PATH, UPLOAD_FOLDER)
 
 
-def upload_file(s3, bucket_name, file, tech_id, mach_id):
+def upload_file(s3, bucket_name, file, tech_id, mach_id, now):
     file_path = os.path.join(UPLOAD_PATH, file.filename)
     file.save(file_path)
-    now = datetime.now().strftime('%Y-%m-%d_%H%M%S')
 
     try:
         file_name = f'T{tech_id}/T{tech_id}.{mach_id}.{now}.txt'
@@ -24,7 +24,10 @@ def upload_file(s3, bucket_name, file, tech_id, mach_id):
 
 
 def get_file_names(s3, bucket_name, tech_id):
-    bucket_objects = s3.list_objects(Bucket=bucket_name)['Contents']
+    try:
+         bucket_objects = s3.list_objects(Bucket=bucket_name)['Contents']
+    except botocore.exceptions.ClientError as e:
+        return str(e)
 
     file_list_for_tech = [content['Key'] for content in bucket_objects if match_first_directory(
         content['Key'], tech_id)]
@@ -32,6 +35,7 @@ def get_file_names(s3, bucket_name, tech_id):
     file_list_trimmed = [second_argument(content)
                          for content in file_list_for_tech]
 
+    print(file_list_trimmed)
     return file_list_trimmed
 
 

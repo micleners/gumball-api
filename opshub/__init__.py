@@ -2,12 +2,15 @@
 OpsHub
 
 """
-from flask import request
-from flask_cors import CORS
+import os
+from datetime import datetime
+
+from pytz import timezone
 import botocore
 import boto3
-import os
-from flask import Flask
+from flask import Flask, request
+from flask_cors import CORS
+
 from opshub.fileshare import create_client
 from opshub import s3_helpers
 
@@ -34,7 +37,7 @@ def create_app(*args, **kwargs) -> Flask:
             s3 = create_client(app)
 
             response = s3_helpers.upload_file(
-                s3, bucket_name, f, tech_id, mach_id)
+                s3, bucket_name, f, tech_id, mach_id, datetime.now(timezone('US/Central')))
             return str(response)
 
     @app.route('/uploads')
