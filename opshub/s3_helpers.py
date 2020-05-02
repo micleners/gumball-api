@@ -35,7 +35,6 @@ def get_file_names(s3, bucket_name, tech_id):
     file_list_trimmed = [second_argument(content)
                          for content in file_list_for_tech]
 
-    print(file_list_trimmed)
     return file_list_trimmed
 
 

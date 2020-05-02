@@ -21,7 +21,7 @@ from opshub import models
 def _file_share(app):
     """boto s3 client object"""
     s3 = opshub.fileshare.create_client(app)
-    print(f'Checking connection to file share')
+
     try:
         res = s3.list_buckets()
         assert res['ResponseMetadata']['HTTPStatusCode'] == 200
@@ -29,11 +29,10 @@ def _file_share(app):
         pytest.fail('Unable to connect to S3 service (hint: try docker-compose up)')
         return
     buckets = [r['Name'] for r in res['Buckets']]
-    print(f'Buckets found: {buckets}')
+
     bucket_name = app.config.get('S3_BUCKET_NAME')
 
     if bucket_name not in buckets:
-        print(f'Creating bucket {bucket_name} connection to file share')
         s3.create_bucket(ACL='public-read-write', Bucket=bucket_name)
     return s3
 
@@ -58,7 +57,7 @@ def _app():
 
     d = multiprocessing.Process(target=run)
     d.start()
-    print('Checking for web server...')
+
     assert requests.get('http://localhost:5000/').status_code == 200
     yield app
     d.terminate()

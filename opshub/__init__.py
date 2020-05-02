@@ -20,7 +20,8 @@ version = '0.0.1'
 def create_app(*args, **kwargs) -> Flask:
     app = Flask(__name__, *args, **kwargs)
     app.config.from_pyfile('config.py')
-    cors = CORS(app, resources={r"*": {"origins": ["http://localhost:3000", "http://localhost:8000", "https://gsi.micleners.com"]}})
+    cors = CORS(app, resources={
+                r"*": {"origins": ["http://localhost:3000", "http://localhost:8000", "https://gsi.micleners.com"]}})
 
     bucket_name = app.config.get('S3_BUCKET_NAME')
 
@@ -37,7 +38,7 @@ def create_app(*args, **kwargs) -> Flask:
             s3 = create_client(app)
 
             response = s3_helpers.upload_file(
-                s3, bucket_name, f, tech_id, mach_id, datetime.now(timezone('US/Central')))
+                s3, bucket_name, f, tech_id, mach_id, datetime.now(timezone('US/Central')).strftime('%Y-%m-%d_%H%M%S'))
             return str(response)
 
     @app.route('/uploads')
